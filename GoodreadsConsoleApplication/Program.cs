@@ -11,15 +11,43 @@ namespace GoodreadsConsoleApplication
     {
         static void Main(string[] args)
         {
+            // e.g. input record            
+
+            /* Record 1 of xxx
+            LOCATIONS Central City & Central City Adults
+            AUTHOR Hill, A. J. (Alvin Joseph)
+            TITLE Under pressure: the final voyage of Submarine S-Five / A.J.
+                   Hill.
+            PUB INFO New York: Free Press, c2002.
+            DESCRIPT viii, 239 p., [8]
+                    p.of plates : ill. ; 23 cm.
+            NOTE Includes index.
+            SUBJECT S-5 (Submarine)
+            SUBJECT Submarine disasters -- North Atlantic Ocean.
+            SUBJECT Submarine disasters -- United States.
+            SUBJECT      Search and rescue operations -- Atlantic Ocean.
+            SUBJECT Cooke, Charles Maynard.
+            SUBJECT United States.Navy.Submarine forces.
+            SUBJECT Nonfiction.
+            ADD TITLE    The final voyage of submarine S-Five.
+            STANDARD #   0743236777.
+            1 > Central City basement n 910.91634 HIL AVAILABLE */
+
+            // e.g. output record       
+
+            // Title,Author,ISBN
+            // The final voyage of submarine S - Five,Hill A J ,0743236777
+
             if (args.Length < 2)
             {
                 Console.WriteLine("Usage is: GoodreadsConsoleApplication <Input File> <Output File>");
                 Environment.Exit(0);
             }
 
-            //Pass the file path and file name to the StreamReader constructor
+            // Pass the file path and file name to the StreamReader constructor
             StreamReader sr = new StreamReader(args[0]);
-            //Pass the filepath and filename to the StreamWriter Constructor
+            // Pass the file path and filename to the StreamWriter Constructor
+            // Output file format is csv
             StreamWriter sw = new StreamWriter(args[1]);
 
             String readLine = "";
@@ -33,15 +61,15 @@ namespace GoodreadsConsoleApplication
 
             try
             {
-                //Read the first line of text
+                // Read the first line of text
                 readLine = sr.ReadLine();
 
-                //Continue to read until you reach end of file
+                // Continue to read until you reach end of file
                 while (readLine != null)
                 {
-                    //write the line to console window
-                    //Console.WriteLine(line);
-                    //Read the next line
+                    // Write the line to console window
+                   
+                    // Read the next line
                     readLine = sr.ReadLine();
 
                     if (readLine == null)
@@ -52,6 +80,7 @@ namespace GoodreadsConsoleApplication
                         int index = readLine.IndexOf("TITLE");
                         readTitle = readLine.Substring(index + 5).Trim();
 
+                        // Remove extra text after "/"
                         index = readTitle.IndexOf("/");
 
                         if (index > 0)
@@ -81,6 +110,9 @@ namespace GoodreadsConsoleApplication
 
                     if (readLine.Contains("STANDARD"))
                     {
+                        // Can be more than on instance of "STANDARD"
+                        // Each instance is a seperate write line
+
                         int index = readLine.IndexOf("STANDARD");
                         readStandard = readStandard + readLine.Substring(index + 10).Trim();
 
@@ -88,6 +120,7 @@ namespace GoodreadsConsoleApplication
                         readStandard = readStandard.Replace(":", "");
                         readStandard = readStandard.Replace(";", "");
 
+                        // Can be two sets of brackets
                         readStandard = RemoveBrackets(readStandard);
                         readStandard = RemoveBrackets(readStandard);
 
@@ -97,6 +130,8 @@ namespace GoodreadsConsoleApplication
                         readStandard = "";
                     }
 
+                    // "Record" starts a new book structure
+
                     if (readLine.Contains("Record"))
                     {
                         writeLine = "";
@@ -104,24 +139,20 @@ namespace GoodreadsConsoleApplication
                         readTitle = "";
                         readStandard = "";                        
                     }
-                }
-
-                //WriteFile(sw, writeLine);  
-                              
+                }               
             }
 
             catch (Exception e)
             {
-                Console.WriteLine("Exception: " + e.Message);
+                Console.WriteLine("Read Exception: " + e.Message);
             }
 
             finally
             {
-                //Console.WriteLine("Executing finally block.");
-                //close the file
+                // Close the file
                 sr.Close();
                
-                //Close the file
+                // Close the file
                 sw.Close();
 
                 Console.WriteLine("Finished - press any key");
@@ -133,26 +164,20 @@ namespace GoodreadsConsoleApplication
         {
             try
             {
-                //Write a line of text
-                sw.WriteLine(line);
-
-                //Write a second line of text
-                //sw.WriteLine("From the StreamWriter class");               
+                // Write a line of text
+                sw.WriteLine(line);                          
             }
 
             catch (Exception e)
             {
-                Console.WriteLine("Exception: " + e.Message);
-            }
-
-            finally
-            {
-                //Console.WriteLine("Executing finally block.");                
-            }
+                Console.WriteLine("Write Exception: " + e.Message);
+            }            
         }
 
         public static String RemoveBrackets(String line)
         {
+            // Remove "( xxx )"
+
             int index = line.IndexOf("(");
             int indexEnd = 0;
 
@@ -168,7 +193,6 @@ namespace GoodreadsConsoleApplication
             }
 
             return line;
-
         }
     }
 }
