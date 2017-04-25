@@ -44,6 +44,9 @@ namespace GoodreadsConsoleApplication
                     //Read the next line
                     readLine = sr.ReadLine();
 
+                    if (readLine == null)
+                        break;
+
                     if (readLine.Contains("TITLE"))
                     {
                         int index = readLine.IndexOf("TITLE");
@@ -58,6 +61,7 @@ namespace GoodreadsConsoleApplication
                         }
 
                         readTitle = readTitle.Replace(".", "");
+                        readTitle = readTitle.Replace(",", "");
 
                         readTitle = readTitle + ",";
 
@@ -82,20 +86,23 @@ namespace GoodreadsConsoleApplication
 
                         readStandard = readStandard.Replace(".", "");
                         readStandard = readStandard.Replace(":", "");
+                        readStandard = readStandard.Replace(";", "");
 
                         readStandard = RemoveBrackets(readStandard);
+                        readStandard = RemoveBrackets(readStandard);
+
+                        writeLine = readTitle + readAuthor + readStandard;
+                        WriteFile(sw, writeLine);
+
+                        readStandard = "";
                     }
 
                     if (readLine.Contains("Record"))
                     {
-                        writeLine = readTitle + readAuthor + readStandard;
-
-                        WriteFile(sw, writeLine);
-
                         writeLine = "";
                         readAuthor = "";
                         readTitle = "";
-                        readStandard = "";
+                        readStandard = "";                        
                     }
                 }
 
@@ -110,13 +117,14 @@ namespace GoodreadsConsoleApplication
 
             finally
             {
-                Console.WriteLine("Executing finally block.");
+                //Console.WriteLine("Executing finally block.");
                 //close the file
                 sr.Close();
                
                 //Close the file
                 sw.Close();
 
+                Console.WriteLine("Finished - press any key");
                 Console.ReadLine();
             }            
         }
@@ -139,7 +147,7 @@ namespace GoodreadsConsoleApplication
 
             finally
             {
-                Console.WriteLine("Executing finally block.");                
+                //Console.WriteLine("Executing finally block.");                
             }
         }
 
