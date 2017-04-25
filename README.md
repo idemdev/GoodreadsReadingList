@@ -6,7 +6,7 @@ Export your reading list to a file.
 
 Then run:
 
-GoodreadsConsoleApplication <Input File> <Output File>
+GoodreadsConsoleApplication Input File Output File
 
 e.g.
 
